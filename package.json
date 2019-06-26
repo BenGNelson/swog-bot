@@ -1,0 +1,14 @@
+{
+  "name": "swogbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "swogbot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ben Nelson",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  }
+}
