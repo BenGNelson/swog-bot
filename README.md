@@ -4,7 +4,7 @@ This is my swog bot for Discord.
 ## Installation
 Run the following code to install node modules
 ```
-node install
+npm install
 ```
 
 ## Configuration
