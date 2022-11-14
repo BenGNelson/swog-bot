@@ -1,6 +1,8 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
+const config = require('./config.json');
+
 const token = config.token
 
 var swog = false;
