@@ -7,8 +7,8 @@ const clientId = config.clientId;
 
 const commands = [
   {
-    name: 'ping',
-    description: 'Replies with Pong!',
+    name: '!swog',
+    description: 'Swogs',
   },
 ];
 
