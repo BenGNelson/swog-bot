@@ -75,7 +75,7 @@ client.on('message', function(message)
     }
 });
 
-client.on('ready', function(){
+client.on('ready', () => {
     console.log("Bot launched...");
     client.user.setActivity('Swog: The Game');
 });
