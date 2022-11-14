@@ -7,7 +7,7 @@ const clientId = config.clientId;
 
 const commands = [
   {
-    name: '!swog',
+    name: 'swog',
     description: 'Swogs',
   },
 ];
