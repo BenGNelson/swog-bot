@@ -1,8 +1,6 @@
-const { Discord, Client, Intents } = require('discord.js');
-const config = require('./config.json');
+const { Client, GatewayIntentBits } = require('discord.js');
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-const bot = new Discord.Client();
 const token = config.token
 
 var swog = false;
@@ -30,7 +28,7 @@ function deactivateSwog(message) {
     console.log("Swog status: " + swog);
 }
 
-bot.on('message', function(message)
+client.on('message', function(message)
 {
     switch(message.content){
 
@@ -75,9 +73,9 @@ bot.on('message', function(message)
     }
 });
 
-bot.on('ready', function(){
+client.on('ready', function(){
     console.log("Bot launched...");
-    bot.user.setActivity('Swog: The Game');
+    client.user.setActivity('Swog: The Game');
 });
 
-bot.login(token);
+client.login(token);
