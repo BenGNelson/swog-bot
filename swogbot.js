@@ -11,59 +11,60 @@ function setSwog(status) {
     swog = status;
 }
 
-function activateSwog(message) {
+async function activateSwog(message, interaction) {
     var number = Math.floor(Math.random() * 100);
 
     if (number < 5) {
-        message.channel.send("Swog unsuccessful. Please swog harder.");
+        await interaction.reply("Swog unsuccessful. Please swog harder.");
     } else {
-        message.channel.send("Swog activated.");
-        message.channel.send("Swog");
+        await interaction.reply("Swog activated.");
+        await interaction.reply("Swog");
         setSwog(true);
         console.log("Swog status: " + swog);
     }
 }
 
-function deactivateSwog(message) {
-    message.channel.send("Swog deactivated.");
+async function deactivateSwog(message, interaction) {
+    await interaction.reply("Swog deactivated.");
     setSwog(false);
     console.log("Swog status: " + swog);
 }
 
-client.on('message', function(message)
-{
-    switch(message.content){
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isChatInputCommand()) return;
+    
+    switch(interaction.commandName){
 
         //swog
         case '!swog':
         if (!swog) {
-            activateSwog(message);
+            activateSwog(message, interaction);
         } else {
-            message.channel.send("Swog is already activated.");
+            await interaction.reply("Swog is already activated.");
         }
         break;
 
         //unswog
         case '!unswog':
         if (!swog) {
-            message.channel.send("Swog is already deactivated.");
+            await interaction.reply("Swog is already deactivated.");
         } else {
-            deactivateSwog(message);
+            deactivateSwog(message, interaction);
         }
         break;
 
         //swog status
         case '!swog status':
         if (swog) {
-            message.channel.send("Swog is active.");
+            await interaction.reply("Swog is active.");
         } else {
-            message.channel.send("Swog is not active. Type !swog to activate swog.");
+            await interaction.reply("Swog is not active. Type !swog to activate swog.");
         }
         break;
 
         //swog help
         case '!swog help':
-        message.channel.send({embed: {
+        await interaction.reply({embed: {
             color: 3447003,
             title: "Swog Bot Options:",
             fields: [
