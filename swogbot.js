@@ -7,8 +7,20 @@ const clientId = config.clientId;
 
 const commands = [
   {
-    name: 'swog',
+    name: '$swog',
     description: 'Swogs',
+  },
+  {
+    name: '$unswog',
+    description: 'Unswogs',
+  },
+  {
+    name: '$swog status',
+    description: 'Gets swog status',
+  },
+  {
+    name: '$swog help',
+    description: 'Displays help',
   },
 ];
 
