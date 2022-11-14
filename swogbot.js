@@ -1,84 +1,39 @@
-const {
-    Client,
-    GatewayIntentBits
-} = require('discord.js');
-const client = new Client({
-    intents: [GatewayIntentBits.Guilds]
-});
+const { REST, Routes } = require('discord.js');
 
 const config = require('./config.json');
 
 const token = config.token;
+const clientId = config.clientId;
 
-var swog = false;
+const commands = [
+  {
+    name: '!swog',
+    description: 'Swogs',
+  },
+    {
+    name: '!unswog',
+    description: 'Undwogs!',
+  },
+    {
+    name: '!swog status',
+    description: 'Gets swog status!',
+  },
+    {
+    name: '!swog help',
+    description: 'Displays help'
+  }
+];
 
-function setSwog(status) {
-    swog = status;
-}
+const rest = new REST({ version: '10' }).setToken(token);
 
-client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isChatInputCommand()) return;
+(async () => {
+  try {
+    console.log('Started refreshing application (/) commands.');
 
-    if (interaction.commandName === '!swog') {
-        if (!swog) {
-            var number = Math.floor(Math.random() * 100);
-            if (number < 5) {
-                await interaction.reply('Swog unsuccessful. Please swog harder.');
-            } else {
-                await interaction.reply('Swog activated.');
-                await interaction.reply('Swog');
-                setSwog(true);
-                console.log('Swog status: ' + swog);
-            }
-        } else {
-            await interaction.reply('Swog is already activated.');
-        }
-    }
+    await rest.put(Routes.applicationCommands(clientId), { body: commands });
 
-    if (interaction.commandName === '!unswog') {
-        if (!swog) {
-            await interaction.reply('Swog is already deactivated.');
-        } else {
-            await interaction.reply('Swog deactivated.');
-            setSwog(false);
-            console.log('Swog status: ' + swog);
-        }
-    }
-
-    if (interaction.commandName === '!swog status') {
-        if (swog) {
-            await interaction.reply('Swog is active.');
-        } else {
-            await interaction.reply(
-                'Swog is not active. Type !swog to activate swog.'
-            );
-        }
-    }
-
-    if (interaction.commandName === '!swog help') {
-        await interaction.reply({
-            embed: {
-                color: 3447003,
-                title: 'Swog Bot Options:',
-                fields: [{
-                        name: 'Command',
-                        value: '!swog\n!unswog\n!swog status',
-                        inline: true,
-                    },
-                    {
-                        name: 'Description',
-                        value: 'Activates swog\nDeactivates swog\nChecks the swog status',
-                        inline: true,
-                    },
-                ],
-            },
-        });
-    }
-});
-
-client.on('ready', () => {
-    console.log('Bot launched...');
-    client.user.setActivity('Swog: The Game');
-});
-
-client.login(token);
+    console.log('Successfully reloaded application (/) commands.');
+  } catch (error) {
+    console.error(error);
+  }
+})();
