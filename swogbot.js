@@ -16,30 +16,12 @@ function setSwog(status) {
     swog = status;
 }
 
-function activateSwog(interaction) {
-    var number = Math.floor(Math.random() * 100);
-
-    if (number < 5) {
-        await interaction.reply('Swog unsuccessful. Please swog harder.');
-    } else {
-        await interaction.reply('Swog activated.');
-        await interaction.reply('Swog');
-        setSwog(true);
-        console.log('Swog status: ' + swog);
-    }
-}
-
-function deactivateSwog(interaction) {
-    await interaction.reply('Swog deactivated.');
-    setSwog(false);
-    console.log('Swog status: ' + swog);
-}
-
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
     if (interaction.commandName === '!swog') {
         if (!swog) {
+            var number = Math.floor(Math.random() * 100);
             if (number < 5) {
                 await interaction.reply('Swog unsuccessful. Please swog harder.');
             } else {
@@ -48,7 +30,6 @@ client.on('interactionCreate', async (interaction) => {
                 setSwog(true);
                 console.log('Swog status: ' + swog);
             }
-            activateSwog(interaction);
         } else {
             await interaction.reply('Swog is already activated.');
         }
