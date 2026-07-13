@@ -1,4 +1,4 @@
-import { DiscordAPIError } from 'discord.js';
+import { DiscordAPIError, DiscordjsErrorCodes } from 'discord.js';
 import { loadConfig, ConfigError } from './config.ts';
 import { createLogger } from './logger.ts';
 import { openDatabase, closeDatabase } from './db/index.ts';
@@ -75,17 +75,29 @@ async function main(): Promise<void> {
   try {
     await client.login(config.token);
   } catch (error) {
-    // A 401 means the token is wrong. Exit immediately and do NOT retry.
+    // A rejected token is fatal. Exit immediately and do NOT retry.
     //
     // This matters more than it looks: Discord blocks an IP after 10,000 invalid
     // requests in 10 minutes. A bot that retries a bad token in a tight loop can
     // get its host's IP banned at the Cloudflare edge -- and this bot runs on a
     // home network, so that would take out the whole house, not just the bot.
     // Exiting lets Docker's restart backoff space the attempts out to ~1/minute.
-    if (error instanceof DiscordAPIError && error.status === 401) {
-      logger.fatal('Discord rejected the token (401). Check DISCORD_TOKEN. Not retrying.');
+    //
+    // TWO shapes of "bad token", and it is easy to handle only the second:
+    //   - a MALFORMED token never reaches Discord. discord.js rejects it locally
+    //     with DiscordjsError code 'TokenInvalid'.
+    //   - a WELL-FORMED but wrong/revoked token comes back as a 401.
+    // Both deserve the same one-line answer rather than a 40-line stack trace.
+    const code = (error as { code?: unknown }).code;
+    const rejected =
+      code === DiscordjsErrorCodes.TokenInvalid ||
+      (error instanceof DiscordAPIError && error.status === 401);
+
+    if (rejected) {
+      logger.fatal('Discord rejected the token. Check DISCORD_TOKEN in .env. Not retrying.');
       process.exit(1);
     }
+
     logger.fatal({ err: error }, 'login failed');
     process.exit(1);
   }
