@@ -1,2 +1,28 @@
-/node_modules
+# --- Secrets ---
+# Holds the real bot token. Never commit. (See this repo's git history for why.)
+.env
+
+# config.json is how the token leaked in 2022. The file is gone and config now
+# comes from the environment, but keep it ignored so it can never come back.
 config.json
+
+# Real forbidden-pattern list for the privacy hooks + check-secrets.sh (this
+# machine's hostnames, IPs, paths). The hook machinery and a generic .example
+# ARE committed; the literals never are — a scanner that ships the values it
+# forbids publishes exactly what it exists to hide.
+.githooks/*.local
+
+# --- Runtime ---
+# The SQLite database. In production it lives in a Docker volume, not here.
+data/
+
+# --- Node ---
+node_modules/
+
+# --- Editor / OS noise ---
+.DS_Store
+*.swp
+
+# --- AI assistant / local-only working files ---
+.claude/
+CLAUDE.md

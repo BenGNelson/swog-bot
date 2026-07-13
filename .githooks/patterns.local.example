@@ -1,0 +1,29 @@
+# Forbidden-pattern list for the pre-commit / commit-msg privacy hooks and for
+# scripts/check-secrets.sh.
+#
+# Copy this to  patterns.local  (gitignored) and fill in YOUR real values, so they
+# are enforced locally and can never be committed to a public repo:
+#
+#   cp .githooks/patterns.local.example .githooks/patterns.local
+#   git config core.hooksPath .githooks
+#
+# One POSIX extended-regex per line. Matching is case-insensitive.
+#
+# ONLY lines starting with "#" are comments. A trailing comment on a pattern line
+# becomes part of the regex and silently disables it. Keep comments on their own line.
+#
+# Patterns for SHAPES (token formats, private IP ranges, key headers) do NOT
+# belong here — they describe a form rather than a value, so they are safe to
+# publish and already live in scripts/check-secrets.sh.
+#
+# Examples — replace with your own:
+#
+#   my-server-hostname
+#   203\.0\.113\.[0-9]+
+#   /home/myuser
+#   mysurname
+#   me@example\.com
+#
+# A private Discord guild ID you don't want public also belongs here:
+#
+#   \b123456789012345678\b

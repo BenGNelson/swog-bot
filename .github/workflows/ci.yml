@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# CI validates. It never deploys, and it holds no secrets — there is no token and
+# no SSH key in this workflow. Deploying is a human running `make deploy`.
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      # LOAD-BEARING. Node runs TypeScript by stripping the types without
+      # checking them, so this is the only thing that makes the types mean
+      # anything. If this step is ever skipped, TypeScript is decoration.
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Unit tests
+        run: npx vitest run
+
+      # Proves a clean clone builds — the same thing the server will do.
+      - name: Docker build
+        run: docker build -t swog-bot:ci .
+
+      # Runs shapes-only here (patterns.local is gitignored and absent in CI),
+      # which is exactly the intent: the literals never leave the developer's machine.
+      - name: Secret scan
+        run: ./scripts/check-secrets.sh

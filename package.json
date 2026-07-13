@@ -1,22 +1,33 @@
 {
-  "name": "swogbot",
-  "version": "1.0.0",
-  "description": "This is my swog bot for Discord.",
-  "main": "swogbot.js",
+  "name": "swog-bot",
+  "version": "2.0.0",
+  "description": "A Discord bot that turns swog on and off. Swog is swag + frog. Both good things.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Ben",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.ts",
+    "dev": "node --watch src/index.ts",
+    "register": "node scripts/register.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate"
   },
-  "author": "Ben Nelson",
-  "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.6.0"
+    "better-sqlite3": "^12.11.1",
+    "discord.js": "^14.26.5",
+    "drizzle-orm": "^0.45.2",
+    "pino": "^10.3.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BenGNelson/swog-bot.git"
-  },
-  "bugs": {
-    "url": "https://github.com/BenGNelson/swog-bot/issues"
-  },
-  "homepage": "https://github.com/BenGNelson/swog-bot#readme"
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^24.10.1",
+    "drizzle-kit": "^0.31.10",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
+  }
 }

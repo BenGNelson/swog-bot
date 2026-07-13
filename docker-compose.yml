@@ -1,0 +1,61 @@
+# swog-bot — service definition.
+# This file is committed and contains NO secrets: every value that differs per
+# host comes from .env at runtime. Compose auto-loads ./.env.
+
+# Docker's default json-file log driver is UNBOUNDED — a long-running bot will
+# eventually fill the disk with its own logs. Cap it.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  bot:
+    build: .
+    image: swog-bot:local
+    container_name: swog-bot
+    restart: unless-stopped
+    env_file: .env
+    logging: *default-logging
+    security_opt:
+      - no-new-privileges:true
+
+    # Node was not designed to run as PID 1: it won't reap zombie children and it
+    # doesn't get the default signal dispositions. `init: true` puts a real init
+    # process in front of it so SIGTERM reaches us and graceful shutdown works.
+    init: true
+
+    volumes:
+      # The SQLite database. A named volume, so `docker compose down` (without -v)
+      # keeps every server's swog state. This is what makes swog survive a deploy.
+      - swog-data:/data
+
+    labels:
+      # Watchtower runs on this host and auto-updates containers from a registry.
+      # This image is built from source and has no registry to poll, so opt out —
+      # otherwise Watchtower logs a confusing "no such image" on every cycle.
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  # Local development only: `docker compose --profile dev up`.
+  # Bind-mounts the source and restarts on change. Point it at your DEV bot token
+  # (a SEPARATE Discord application) — running two processes on one token means
+  # both receive every interaction, so every command answers twice.
+  bot-dev:
+    profiles: ["dev"]
+    build: .
+    image: swog-bot:local
+    container_name: swog-bot-dev
+    restart: "no"
+    env_file: .env
+    logging: *default-logging
+    init: true
+    command: ["node", "--watch", "src/index.ts"]
+    volumes:
+      - ./src:/app/src:ro
+      - ./drizzle:/app/drizzle:ro
+      - swog-dev-data:/data
+
+volumes:
+  swog-data:
+  swog-dev-data:

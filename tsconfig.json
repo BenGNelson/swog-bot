@@ -1,0 +1,33 @@
+{
+  // We never emit. Node runs the .ts files directly via its built-in type
+  // stripping (stable since v24), so there is no build step, no dist/, no
+  // bundler. tsc exists ONLY to typecheck -- which makes `npm run typecheck`
+  // load-bearing: stripping erases types without checking them, so a type error
+  // is a runtime crash unless CI catches it here.
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["esnext"],
+    "types": ["node"],
+
+    "noEmit": true,
+
+    // Node strips types; it does not TRANSFORM code. Anything that needs a
+    // runtime transform (enums, decorators, constructor parameter properties,
+    // namespaces) is therefore banned. This flag makes tsc reject them instead
+    // of letting Node fail at startup with a confusing SyntaxError.
+    "erasableSyntaxOnly": true,
+
+    // Imports must carry the real .ts extension, because Node resolves the file
+    // on disk. These two flags make tsc agree with that.
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "tests", "scripts", "drizzle.config.ts"]
+}

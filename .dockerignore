@@ -1,0 +1,21 @@
+# Keep the build context small — and, more importantly, make it impossible to
+# bake secrets or host state into an image layer. This is a backstop: .env is
+# gitignored too, but `docker build` does not read .gitignore.
+.env
+.git/
+.githooks/
+.github/
+node_modules/
+data/
+tests/
+
+# Keep scripts/register.ts — it runs INSIDE the container (`make register`) and
+# imports the same command registry the bot does, which is what guarantees the
+# registered names and the handled names can never drift apart. The shell scripts
+# run on the host, so they stay out of the image.
+scripts/*.sh
+
+*.md
+.claude/
+CLAUDE.md
+.DS_Store
