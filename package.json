@@ -29,5 +29,16 @@
     "drizzle-kit": "^0.31.10",
     "typescript": "^5.9.3",
     "vitest": "^4.1.10"
+  },
+  "//overrides": [
+    "@discordjs/rest pins undici to EXACTLY 6.24.1, which carries a HIGH-severity",
+    "advisory in its WebSocket client (DoS via fragment count bypass) plus three",
+    "moderate ones. A Discord bot is a WebSocket client, so this is squarely in the",
+    "path -- not theoretical. There is no range to bump into, so we override to the",
+    "patched 6.27.0 within the same major. `npm audit --omit=dev` then reports 0.",
+    "Re-check this on every discord.js bump; drop the override once upstream moves."
+  ],
+  "overrides": {
+    "undici": "^6.27.0"
   }
 }
