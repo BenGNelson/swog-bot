@@ -39,6 +39,6 @@
     "Re-check this on every discord.js bump; drop the override once upstream moves."
   ],
   "overrides": {
-    "undici": "^6.27.0"
+    "undici": "^6.29.0"
   }
 }
